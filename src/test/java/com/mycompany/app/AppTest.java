@@ -8,7 +8,7 @@ import org.junit.After;
 import static org.junit.Assert.*;
 
 /**
- * Unit test for simple App.
+ * Unit test for a simple Java Application
  */
 public class AppTest
 {
@@ -34,9 +34,21 @@ public class AppTest
     {
         App.main(null);
         try {
-            assertEquals("Hello World!" + System.getProperty("line.separator"), outContent.toString());
+            assertEquals("A Simple Java Application - My first step to intuit !" + System.getProperty("line.separator"), outContent.toString());
         } catch (AssertionError e) {
-            fail("\"message\" is not \"Hello World!\"");
+            fail("\"message\" is not \"A Simple Java Application - My first step to intuit !\"");
+        }
+    }
+
+    @Test
+    public void testfornumeral()
+    {
+        App.main(null);
+        try {
+            String str=outContent.toString();
+            assertTrue(str.matches(".*\\d.*"));
+        } catch (AssertionError e) {
+            fail("There are no numeric digits in the output ! ");
         }
     }
 
