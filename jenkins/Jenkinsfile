@@ -6,7 +6,7 @@ pipeline {
         label 'BuildAgent' 
         }
     stages {
-        stage('Compile') {
+        stage('Compile and package') {
             steps {
                 echo "clean, compile and package .........."
                 sh 'mvn -B -DskipTests clean package'
