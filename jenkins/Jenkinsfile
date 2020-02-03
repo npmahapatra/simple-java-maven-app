@@ -92,8 +92,6 @@ Check console output at $BUILD_URL to view the results.''', recipientProviders: 
                         currentBuild.result='FAILURE'
                     }
                 }
-                //Run some other integration tests here
-            }
                 echo "Run Load tests here...."
                 // Load tests go here
             }
