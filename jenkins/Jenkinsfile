@@ -10,25 +10,25 @@ pipeline {
             steps {
                 sh 'mvn -B -DskipTests clean package'
             }
-        }
-        try {
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-                sh 'mvn site'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
-        }
         } 
+        stage('Test') {
+            try 
+            {
+                steps {
+                    sh 'mvn test'
+                    sh 'mvn site'
+                }
+                post {
+                    always {
+                        junit 'target/surefire-reports/*.xml'
+                    }
+                }
+            }    
         finally
             {
             step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
             }   
-    
+        }
         stage('Deliver') {
             steps {
                 sh './jenkins/scripts/deliver.sh'
