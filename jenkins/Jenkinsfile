@@ -39,6 +39,7 @@ Check console output at $BUILD_URL to view the results.''', recipientProviders: 
                             echo "Deploy Site to Build Agent failed"
                         }
             }
+        }
 
         stage('Run Integration tests') {
             steps {
