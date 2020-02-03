@@ -23,11 +23,12 @@ pipeline {
                 }
             }
         }
-        } finally {
+        } 
+        finally
+            {
             step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
-}
-        
-    }
+            }   
+    
         stage('Deliver') {
             steps {
                 sh './jenkins/scripts/deliver.sh'
