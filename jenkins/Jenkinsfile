@@ -21,14 +21,12 @@ pipeline {
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/TEST-*.xml'
                     }
                     failure {
-                        steps {
                             echo "post Test - failed................"
                             sh 'pwd'
                             emailext attachmentsPattern: '../target/surefire-reports/TEST-*.xml', body: '''$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
 
 Check console output at $BUILD_URL to view the results.''', recipientProviders: [culprits()], subject: 'Test Cases failed !! $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!', to: 'npmahapatra@gmail.com'
                     }
-                }
             }
         }     
         stage('Deliver') {
