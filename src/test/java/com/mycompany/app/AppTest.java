@@ -46,7 +46,8 @@ public class AppTest
         App.main(null);
         try {
             String str=outContent.toString();
-            assertTrue(str.matches(".*\\d.*"));
+            // assertTrue(str.matches(".*\\d.*"));
+            assertFalse(str.matches(".*\\d.*"));
         } catch (AssertionError e) {
             fail("There are no numeric digits in the output ! ");
         }
