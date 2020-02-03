@@ -5,30 +5,29 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                echo "clean, compile ana package .........."
                 sh 'mvn -B -DskipTests clean package'
             }
         } 
         stage('Test') {
                 steps {
+                    echo "Test .........."
                     sh 'mvn test'
                     sh 'mvn site'
                 }
                 post {
                     always {
-                        junit 'target/surefire-reports/*.xml'
-                        script{
-                            if (currentBuild.currentResult == "ABORTED" || currentBuild.currentResult == "FAILURE")
-                            {
-                                steps {
-                                    sh 'pwd'
-                                    junit allowEmptyResults: true, testResults: 'target/surefire-reports/TEST-*.xml'
-                                    emailext attachmentsPattern: '../target/surefire-reports/TEST-*.xml', body: '''$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
+                        echo "post Test - Always................"
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/TEST-*.xml'
+                    }
+                    regression {
+                        steps {
+                            echo "post Test - failed................"
+                            sh 'pwd'
+                            emailext attachmentsPattern: '../target/surefire-reports/TEST-*.xml', body: '''$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
 
-        Check console output at $BUILD_URL to view the results.''', recipientProviders: [culprits()], subject: 'Test Cases failed !! $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!', to: 'npmahapatra@gmail.com'
-                                    }
-                            }
-    }
-                        
+Check console output at $BUILD_URL to view the results.''', recipientProviders: [culprits()], subject: 'Test Cases failed !! $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!', to: 'npmahapatra@gmail.com'
+                    }
                 }
             }
         }     
