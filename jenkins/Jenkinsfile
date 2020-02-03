@@ -33,7 +33,7 @@ Check console output at $BUILD_URL to view the results.''', recipientProviders: 
         stage('Deploy to Build Agent') {
             steps {
                 echo "Deploying to Build Agent ........ ${buildserver}"
-                sh ' mvn tomcat7:deploy -Dservername="'"${buildserver}"'" '
+                sh """ mvn tomcat7:deploy -Dservername='"'${buildserver}'"' """
             }
             post {
                 failure {
@@ -50,7 +50,7 @@ Check console output at $BUILD_URL to view the results.''', recipientProviders: 
                         sh  '''
                         if curl -s --head --request GET http://192.168.56.1:8091/mytestapp/ | grep "HTTP/1.1 200" > /dev/null; then 
                             echo "Website is UP - response 200 OK"
-                        else
+                        else 
                             echo "Website is DOWN"
                             exit 1 
                         fi
