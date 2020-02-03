@@ -1,37 +1,80 @@
+def buildserver="192.168.56.1:8091"
+def deployserver="192.168.56.1:8061"
+
 pipeline {
     agent {
         label 'BuildAgent' 
         }
     stages {
-        stage('Build') {
+        stage('Compile') {
             steps {
-                echo "clean, compile ana package .........."
+                echo "clean, compile and package .........."
                 sh 'mvn -B -DskipTests clean package'
             }
         } 
-        stage('Test') {
+        stage('Run Unit Tests') {
                 steps {
-                    echo "Test .........."
                     sh 'mvn test'
                     sh 'mvn site'
                 }
                 post {
                     always {
-                        echo "post Test - Always................"
+                        echo "Archive Junit Surefire test results"
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/TEST-*.xml'
                     }
                     failure {
-                            echo "post Test - failed................"
-                            sh 'pwd'
+                            echo "Trigger mail notifying failed test cases"
                             emailext attachmentsPattern: './target/surefire-reports/TEST-*.xml', body: '''$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
 
 Check console output at $BUILD_URL to view the results.''', recipientProviders: [culprits()], subject: 'Test Cases failed !! $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!', to: 'npmahapatra@gmail.com'
                     }
             }
-        }     
-        stage('Deliver') {
+        }
+        stage('Deploy to Build Agent') {
             steps {
-                sh './jenkins/scripts/deliver.sh'
+                sh 'mvn tomcat7:deploy -Dservername='"'${buildserver}'"''
+            }
+            post {
+                failure {
+                            echo "Deploy Site to Build Agent failed"
+                        }
+            }
+
+        stage('Run Integration tests') {
+            steps {
+                script {
+                    try {
+                        echo "Checking if App is live"
+                        sh  '''
+                        if curl -s --head --request GET http://192.168.56.1:8091/mytestapp/ | grep "HTTP/1.1 200" > /dev/null; then 
+                            echo "Website is UP - response 200 OK"
+                        else
+                            echo "Website is DOWN"
+                            exit 1 
+                        fi
+                        '''
+                    } catch(all) {
+                        currentBuild.result='FAILURE'
+                    }
+                }
+                //Run some other integration tests here
+            }
+        }
+
+        stage('Deploy to Deployment Server') {
+            steps {
+                sh 'mvn tomcat7:deploy -Dservername='"'${deployserver}'"''
+            }
+            post {
+                failure {
+                            echo "Deploy Site to Deployment Server failed"
+                        }
+            }
+        }
+
+        stage('Sanity/Load Test') {
+            steps {
+                // Load tests go here
             }
         }
     }
