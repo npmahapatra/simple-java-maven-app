@@ -20,7 +20,7 @@ pipeline {
                         echo "post Test - Always................"
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/TEST-*.xml'
                     }
-                    regression {
+                    failure {
                         steps {
                             echo "post Test - failed................"
                             sh 'pwd'
