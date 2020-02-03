@@ -1,5 +1,5 @@
-def buildserver="192.168.56.1:8091"
-def deployserver="192.168.56.1:8061"
+def buildserver='192.168.56.1:8091'
+def deployserver='192.168.56.1:8061'
 
 pipeline {
     agent {
@@ -33,7 +33,7 @@ Check console output at $BUILD_URL to view the results.''', recipientProviders: 
         stage('Deploy to Build Agent') {
             steps {
                 echo "Deploying to Build Agent ........"
-                sh ''' mvn tomcat7:deploy -Dservername=\${buildserver} '''
+                sh ''' mvn tomcat7:deploy -Dservername=\"${buildserver}\" '''
             }
             post {
                 failure {
