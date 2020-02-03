@@ -33,7 +33,7 @@ Check console output at $BUILD_URL to view the results.''', recipientProviders: 
         stage('Deploy to Build Agent') {
             steps {
                 echo "Deploying to Build Agent ........ ${buildserver}"
-                sh ''' mvn tomcat7:deploy -Dservername="`${buildserver}`" '''
+                sh ' mvn tomcat7:deploy -Dservername="'"${buildserver}"'" '
             }
             post {
                 failure {
