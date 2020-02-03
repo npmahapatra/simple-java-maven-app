@@ -23,7 +23,7 @@ pipeline {
                     failure {
                             echo "post Test - failed................"
                             sh 'pwd'
-                            emailext attachmentsPattern: '../target/surefire-reports/TEST-*.xml', body: '''$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
+                            emailext attachmentsPattern: '/target/surefire-reports/TEST-*.xml', body: '''$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
 
 Check console output at $BUILD_URL to view the results.''', recipientProviders: [culprits()], subject: 'Test Cases failed !! $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!', to: 'npmahapatra@gmail.com'
                     }
