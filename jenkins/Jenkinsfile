@@ -65,7 +65,7 @@ Check console output at $BUILD_URL to view the results.''', recipientProviders: 
 
         stage('Deploy to Deployment Server') {
             steps {
-                sh ''' mvn tomcat7:deploy -Dservername="${deployserver}" '''
+                sh ''' mvn tomcat7:deploy -Dservername=${deployserver} '''
             }
             post {
                 failure {
